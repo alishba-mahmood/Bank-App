@@ -36,12 +36,7 @@ public class UsersService  implements UserDetailsService {
     }
     public Optional<Users> getUserById(Long id)
     {
-        Optional<Users> user = usersRepository.findById(id);
-        if(user.isPresent())
-        {
-            return user;
-        }
-        return null;
+        return usersRepository.findById(id);
     }
 
     public void UpdateUser(Long id, Account account) {

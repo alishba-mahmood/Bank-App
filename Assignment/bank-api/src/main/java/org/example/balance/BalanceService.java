@@ -1,27 +1,44 @@
 package org.example.balance;
 
+import org.example.user.Users;
+import org.example.user.UsersService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BalanceService {
 
     private final BalanceRepository balanceRepository;
+    private final UsersService usersService;
 
-    public BalanceService(BalanceRepository balanceRepository) {
+    public BalanceService(BalanceRepository balanceRepository, UsersService usersService) {
         this.balanceRepository = balanceRepository;
+        this.usersService = usersService;
     }
 
     public List<Balance> findAll() {
         return balanceRepository.findAll();
     }
 
-    public Balance displayBalance(Long id)
+    public Balance displayBalance(Long id, String loggedInData)
     {
-        Balance balance = balanceRepository.findByAccountId(id);
-        return balance;
+        if (loggedInData.equals("admin"))
+        {
+            return balanceRepository.findByAccountId(id);
+        }
+        else
+        {
+            Users user = usersService.findByUserName(loggedInData);
+            Long loggedId = user.getAccount_id();
+            if(loggedId.equals(id))
+            {
+                return balanceRepository.findByAccountId(id);
+            }
+            return null;
+        }
     }
     public void createBalance(LocalDate date, int amount, String DB_CR, Long account_id) {
         Balance bal = new Balance();

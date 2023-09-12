@@ -37,10 +37,10 @@ public class AccountController {
         return ResponseEntity.ok(ApiResponse.of(service.findAllData()));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Optional<Account>>> findById(@PathVariable("id") Long id)
+    public ResponseEntity<ApiResponse<Optional<Account>>> findById(@PathVariable("id") Long id, Authentication auth)
     {
-
-        Optional<Account> accountFound = service.CheckAndDisplay(id);
+        String name = auth.getName();
+        Optional<Account> accountFound = service.checkAndDisplay(id,name);
         if (accountFound.isEmpty())
         {
             return null;
@@ -65,7 +65,7 @@ public class AccountController {
     public ResponseEntity<ApiResponse<Optional<Account>>> update(@PathVariable Long id, @RequestBody Account account,Authentication auth) {
 
         String login_name = auth.getName();
-        Optional<Account> accountFound = service.CheckAndUpdate(id, account,login_name);
+        Optional<Account> accountFound = service.checkAndUpdate(id, account,login_name);
         if (accountFound.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

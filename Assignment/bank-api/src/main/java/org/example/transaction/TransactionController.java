@@ -1,7 +1,9 @@
 package org.example.transaction;
 
+import org.example.balance.Balance;
 import org.example.basic.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping()
     public ResponseEntity<ApiResponse<List<Transaction>>> findAll(){
         return ResponseEntity.ok(ApiResponse.of(transactionService.findAll()));
@@ -26,7 +29,7 @@ public class TransactionController {
     public ResponseEntity<ApiResponse<Optional<Transaction>>> findById(@PathVariable("id") Long id, Authentication auth) {
 
         String login_name = auth.getName();
-        Optional<Transaction> transactionFound = transactionService.CheckAndDisplayTransaction(id, login_name);
+        Optional<Transaction> transactionFound = transactionService.checkAndDisplayTransaction(id, login_name);
         if (transactionFound.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -37,21 +40,24 @@ public class TransactionController {
     public ApiResponse<Long> getMaxId(){
         return ApiResponse.of(transactionService.getMaxId());
     }
+    
     @PostMapping()
     public ResponseEntity<Transaction> create(@RequestBody Transaction transaction) {
         Transaction created = transactionService.createTransaction(transaction);
         if (created != null) {
-
-            //balanceService.updateBalanceByAccountId(created.getAccount_id(),created.getAmount(),created.getDB_CR(),created.getDate());
             return ResponseEntity.ok(created);
         }
         return ResponseEntity.notFound().build();
     }
     @GetMapping("/account/{id}")
-    public ResponseEntity<ApiResponse<List<Transaction>>> findByAccId(@PathVariable("id") Long id)
+    public ResponseEntity<ApiResponse<Optional<List<Transaction>>>> findByAccId(@PathVariable("id") Long id,Authentication auth)
     {
-        List<Transaction> transaction = transactionService.displayTransaction(id);
-        return ResponseEntity.ok(ApiResponse.of(transaction));
-
+        String name = auth.getName();
+        Optional<List<Transaction>> transactions = transactionService.displayTransactionsOfAccount(id,name);
+        return ResponseEntity.ok(ApiResponse.of(transactions));
     }
+
+
+
+
 }
