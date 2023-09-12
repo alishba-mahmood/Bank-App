@@ -36,4 +36,4 @@ management:
     health:
       show-details: when-authorized
 
-spring.profiles.include: dev
+#spring.profiles.include: dev
