@@ -16,14 +16,6 @@ import java.util.Optional;
 @Service
 public class AccountService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    @Value("${news.page.min:0}")
-    public int pageMin = 0;
-
-    @Value("${news.page.size.min:1}")
-    public int pageSizeMin = 1;
-
-    @Value("${news.page.size.max:100}")
-    public int pageSizeMax = 100;
 
     @Value("${bank.db.like.operator:%}")    //used to set default value of things
     private String likeOperator;
@@ -74,7 +66,6 @@ public class AccountService {
     }
     public Account create(Account account)
     {
-        System.out.println("in create accounts service------------------------------------------------");
         if (account.getAccount_id() != null && repository.existsById(account.getAccount_id()))
         {
             logger.warn("Account already exist");
@@ -93,8 +84,6 @@ public class AccountService {
         {
             if(name.equals("admin"))
             {
-                System.out.println("\n\n");
-                System.out.println("in update account service------------------------------------------------");
 
                 Optional<Account> foundAccount = repository.findById(id);
                 Account newAccount = foundAccount.get();
@@ -135,7 +124,6 @@ public class AccountService {
         if(!repository.existsById(id)){
             return false;
         }
-        System.out.println("in delete accounts service------------------------------------------------");
         transactionService.deleteTransByAccID(id);
         balanceService.deleteBalanceByAccID(id);
         userService.deleteUserByAccID(id);

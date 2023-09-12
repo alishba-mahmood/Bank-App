@@ -24,8 +24,6 @@ public class BalanceController {
 
     @GetMapping("/account/{id}")public ResponseEntity<ApiResponse<Balance>> findByAccId(@PathVariable("id") Long id)
     {
-        System.out.println("\n\n");
-        System.out.println("in get  balance by account id------------------------------------------------");
 
         Balance balance = balanceService.displayBalance(id);
         return ResponseEntity.ok(ApiResponse.of(balance));

@@ -76,7 +76,6 @@ public class TransactionService {
         return null;
     }
     public Long getMaxId(){
-        System.out.println("\n\ngetting max id in service\n");
 
         Long id = transactionRepository.getMaxId();
         System.out.println(id);
