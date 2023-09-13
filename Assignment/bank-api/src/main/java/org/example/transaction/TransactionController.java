@@ -1,6 +1,5 @@
 package org.example.transaction;
 
-import org.example.balance.Balance;
 import org.example.basic.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
